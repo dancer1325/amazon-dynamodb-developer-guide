@@ -10,7 +10,11 @@ You can find the corresponding content for this repo on [the AWS Documentation w
 
 ## Amazon DynamoDB Developer Guide
 
-The open source version of the Amazon DynamoDB docs. You can submit feedback & requests for changes by submitting issues in this repo or by making proposed changes & submitting a pull request.
+* branches
+  * archived
+    * announce has been archived
+  * master
+    * documentation updated till 2023
 
 ## License Summary
 
