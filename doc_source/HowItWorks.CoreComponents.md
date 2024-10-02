@@ -1,12 +1,62 @@
 # Core components of Amazon DynamoDB<a name="HowItWorks.CoreComponents"></a>
 
-In DynamoDB, tables, items, and attributes are the core components that you work with\. A *table* is a collection of *items*, and each item is a collection of *attributes*\. DynamoDB uses primary keys to uniquely identify each item in a table and secondary indexes to provide more querying flexibility\. You can use DynamoDB Streams to capture data modification events in DynamoDB tables\.
+* Amazon DynamoDB core components = tables + items + attributes
+  * tables
+    * == collection of items
+    * data modification events | tables -- can be captured via -- DynamoDB Streams
+  * items
+    * == collection of attributes
+    * 👁️each item | table -- is identified uniquely by -- primary keys 👁️
+      * 👁️ secondary indexes 👁️
+        * allows
+          * querying each item more flexible
+  * attributes
 
- There are limits in DynamoDB\. For more information, see [Service, account, and table quotas in Amazon DynamoDB](ServiceQuotas.md)\.
+* [restrictions | DynamoDB](ServiceQuotas.md)
 
-The following video will give you an introductory look at tables, items, and attributes\.
-
-[Tables, items, and attributes](https://www.youtube.com/embed/Mw8wCj0gkRc)
+* [tables, items and attributes introduction](https://www.youtube.com/embed/Mw8wCj0gkRc)
+  * tables
+    * == bucket
+      * uses
+        * store securely your data
+      * ⭐primary key MANDATORY to be defined ⭐
+      * settings / table
+        * capacity
+        * backups
+        * replications
+  * items
+    * primary key
+      * 1! / item
+      * types
+        * simple primary key
+          * == ONLY partition key | table
+        * composite primary key
+          * == partition key + sort key | table
+    * uses
+      * store your application data
+    * item1's schema (can be) != item2's schema
+      * schema == attributes
+    * 👁️core unit of data | DynamoDb 👁️
+    * types of keys / item
+      * partition or hash key
+        * uses
+          * where data will be stored
+        * 's value -- is hashed by -- database
+        * item1's partition key (can be) != item2's partition key 
+      * sort or range key
+        * uses
+          * way to store items / have SAME partition key == 1toMany
+            * -> collection item
+  * query
+    * requirements
+      * pass partition key or
+    * optionally
+      * pass sort key
+    * != scan
+  * scan
+    * inefficient
+    * expensive
+  * TODO:
 
 ## Tables, items, and attributes<a name="HowItWorks.CoreComponents.TablesItemsAttributes"></a>
 
