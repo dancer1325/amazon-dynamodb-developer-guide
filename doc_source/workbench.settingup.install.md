@@ -36,32 +36,12 @@
 
 **To install NoSQL Workbench on macOS**
 
-1.  Run the NoSQL Workbench installer application and choose the setup language\. Then choose **OK** to begin the setup\. For more information about downloading NoSQL Workbench, see [Download NoSQL Workbench for DynamoDB](workbench.settingup.md)\. 
-
-1.  Choose **Next** to continue the setup, and then choose **Next** on the following screen\. 
-
-1.  By default, the **Install DynamoDB local** check box is selected to include DynamoDB local as part of the installation\. Keeping this option selected ensures that DynamoDB local will be installed, and the destination path will be the same as the installation path of NoSQL Workbench\. Clearing this option will skip the installation of DynamoDB local, and the installation path will be for NoSQL Workbench only\. 
-
-   Choose the destination where you want the software installed, and choose **Next**\. 
-**Note**  
- If you opted to not include DynamoDB local as part of the setup, clear the **Install DynamoDB local** check box, choose **Next**, and skip to step 8\. You can download DynamoDB local separately as a standalone installation at a later time\. For more information, see [Setting up DynamoDB local \(downloadable version\)](DynamoDBLocal.md)\.   
-![\[\]](http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/images/workbench/Install-Mac1.png)
-
-1.  Select the Region for the download of DynamoDB local and choose **Next**\. 
-
-1.  Configure your AWS account by selecting the **Yes, I would like to enter my AWS credentials** check box\. If you don't have an AWS account, or would like to set this up later, you can keep the check box clear and choose **Next**\.   
-![\[\]](http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/images/workbench/Install-Mac2.png)
-
-1.  You are shown a confirmation of your chosen AWS credentials\. Choose **OK** to continue\. 
-
-1.  Choose the port number for DynamoDB local to use\. The default port is 8000\. After you enter the port number, choose **Next**\. 
-
-1. Choose **Next** to begin setup\.
-
-1. When the setup has completed, choose **Finish** to close the setup screen\.
-
-**Note**  
- NoSQL Workbench for macOS performs auto\-updates\. To get notification about updates, enable notification access to NoSQL Workbench in System Preferences > Notifications\. 
+* Run the NoSQL Workbench installer application
+* DynamoDB local
+  * installed by default
+  * if you want to run it -> default port is 8000
+* performs auto-updates
+  * if you want to get notifications -> System Preferences > Notifications 
 
 ------
 #### [ Linux ]
