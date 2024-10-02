@@ -1,24 +1,20 @@
 # Cheat sheet for DynamoDB<a name="CheatSheet"></a>
 
-This cheat sheet provides a quick reference for working with Amazon DynamoDB and its various AWS SDKs\.
+* goal
+  * quick reference -- for working with --
+    * Amazon DynamoDB &
+    * it's AWS SDKs
 
 ## Initial setup<a name="CheatSheet.InitialSetup"></a>
 
-1. [Sign up for AWS](SettingUp.DynamoWebService.html#SettingUp.DynamoWebService.SignUpForAWS)\.
-
-1. [Get an AWS access key](SettingUp.DynamoWebService.html#SettingUp.DynamoWebService.GetCredentials) to access DynamoDB programmatically\.
-
-1. [Configure your DynamoDB credentials](SettingUp.DynamoWebService.html#SettingUp.DynamoWebService.ConfigureCredentials)\.
-
-**See also:**
-+ [Setting up DynamoDB \(web service\)](SettingUp.DynamoWebService.html)
-+ [Getting started with DynamoDB](GettingStartedDynamoDB.html)
-+ [Basic overview of core components](HowItWorks.CoreComponents.html)
-
+1. [Sign up for AWS](SettingUp.DynamoWebService.html#SettingUp.DynamoWebService.SignUpForAWS)
+2. [Get an AWS access key](SettingUp.DynamoWebService.html#SettingUp.DynamoWebService.GetCredentials)
+   1. allows -- accessing programmatically to -- DynamoDB
+3. [Configure your DynamoDB credentials](SettingUp.DynamoWebService.html#SettingUp.DynamoWebService.ConfigureCredentials)
  
 
 ## SDK or CLI<a name="CheatSheet.Platform"></a>
-
+* TODO:
 Choose your preferred [SDK](sdk-general-information-section.html), or set up the [AWS CLI](/cli/latest/index.html)\.
 
 **Note**  
