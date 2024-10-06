@@ -2,15 +2,115 @@
 
 * Amazon DynamoDB core components = tables + items + attributes
   * tables
-    * == collection of items
+    * == collection (WITHOUT limit) of items
     * data modification events | tables -- can be captured via -- DynamoDB Streams
+    * _Example:_ "People" table
   * items
     * == collection of attributes
     * 👁️each item | table -- is identified uniquely by -- primary keys 👁️
       * 👁️ secondary indexes 👁️
         * allows
           * querying each item more flexible
+    * _Example:_ "person" is an item | table "people"
   * attributes
+    * == fundamental data element / NOT broken down
+    * == fields or columns | other DDBB
+    * nested attributes
+      * == attribute's attribute .....
+      * <= 32 levels are possible
+    * _Example:_ "PersonId" can be n attribute | "person" item
+
+* _Example1:
+
+```
+People      // table / schemaless == attributes nor their data types need to be defined beforehand  -> each item can have its own distinct attributes
+
+// next are items       / the primary key is "PersonID"
+{
+    "PersonID": 101,
+    "LastName": "Smith",
+    "FirstName": "Fred",
+    "Phone": "555-4321"
+}
+
+{
+    "PersonID": 102,
+    "LastName": "Jones",
+    "FirstName": "Mary",
+    "Address": {
+                "Street": "123 Main",
+                "City": "Anytown",
+                "State": "OH",
+                "ZIPCode": 12345
+    }
+}
+
+{
+    "PersonID": 103,
+    "LastName": "Stephens",
+    "FirstName": "Howard",
+    "Address": {                        // attribute / have nested attribute
+                "Street": "123 Main",
+                "City": "London",                                    
+                "PostalCode": "ER3 5K8"
+    },
+    "FavoriteColor": "Blue"             // previous items do NOT have this attribute, because the table is schemaless
+}
+```
+
+* _Example2:_
+
+```
+Music   // table    / schemaless
+
+// next are items       / the primary key is Artist & SongTitle     -> distinguishes each item | table vs ALL of the others
+{
+    "Artist": "No One You Know",
+    "SongTitle": "My Dog Spot",
+    "AlbumTitle": "Hey Now",
+    "Price": 1.98,
+    "Genre": "Country",
+    "CriticRating": 8.4
+}
+
+{
+    "Artist": "No One You Know",
+    "SongTitle": "Somewhere Down The Road",
+    "AlbumTitle": "Somewhat Famous",
+    "Genre": "Country",
+    "CriticRating": 8.4,
+    "Year": 1984
+}
+
+{
+    "Artist": "The Acme Band",
+    "SongTitle": "Still in Love",
+    "AlbumTitle": "The Buck Starts Here",
+    "Price": 2.47,
+    "Genre": "Rock",
+    "PromotionInfo": {          // nested attribute
+        "RadioStationsPlaying": {
+            "KHCR",
+            "KQBX",
+            "WTNR",
+            "WJJH"
+        },
+        "TourDates": {
+            "Seattle": "20150622",
+            "Cleveland": "20150630"
+        },
+        "Rotation": "Heavy"
+    }
+}
+
+{
+    "Artist": "The Acme Band",
+    "SongTitle": "Look Out, World",
+    "AlbumTitle": "The Buck Starts Here",
+    "Price": 0.99,
+    "Genre": "Rock"
+}
+```
 
 * [restrictions | DynamoDB](ServiceQuotas.md)
 
@@ -49,127 +149,19 @@
             * -> collection item
   * query
     * requirements
-      * pass partition key or
+      * pass partition key
     * optionally
       * pass sort key
     * != scan
   * scan
-    * inefficient
-    * expensive
-  * TODO:
+    * characteristics
+      * inefficient
+      * expensive
 
-## Tables, items, and attributes<a name="HowItWorks.CoreComponents.TablesItemsAttributes"></a>
-
-The following are the basic DynamoDB components:
-+ **Tables** – Similar to other database systems, DynamoDB stores data in tables\. A *table* is a collection of data\. For example, see the example table called *People* that you could use to store personal contact information about friends, family, or anyone else of interest\. You could also have a *Cars* table to store information about vehicles that people drive\.
-+ **Items** – Each table contains zero or more items\. An *item* is a group of attributes that is uniquely identifiable among all of the other items\. In a *People* table, each item represents a person\. For a *Cars* table, each item represents one vehicle\. Items in DynamoDB are similar in many ways to rows, records, or tuples in other database systems\. In DynamoDB, there is no limit to the number of items you can store in a table\.
-+ **Attributes** – Each item is composed of one or more attributes\. An *attribute* is a fundamental data element, something that does not need to be broken down any further\. For example, an item in a *People* table contains attributes called *PersonID*, *LastName*, *FirstName*, and so on\. For a *Department* table, an item might have attributes such as *DepartmentID*, *Name*, *Manager*, and so on\. Attributes in DynamoDB are similar in many ways to fields or columns in other database systems\.
-
-The following diagram shows a table named *People* with some example items and attributes\.
-
-```
-People
-
-{
-    "PersonID": 101,
-    "LastName": "Smith",
-    "FirstName": "Fred",
-    "Phone": "555-4321"
-}
-
-{
-    "PersonID": 102,
-    "LastName": "Jones",
-    "FirstName": "Mary",
-    "Address": {
-                "Street": "123 Main",
-                "City": "Anytown",
-                "State": "OH",
-                "ZIPCode": 12345
-    }
-}
-
-{
-    "PersonID": 103,
-    "LastName": "Stephens",
-    "FirstName": "Howard",
-    "Address": {
-                "Street": "123 Main",
-                "City": "London",                                    
-                "PostalCode": "ER3 5K8"
-    },
-    "FavoriteColor": "Blue"
-}
-```
-
-Note the following about the *People* table:
-+ Each item in the table has a unique identifier, or primary key, that distinguishes the item from all of the others in the table\. In the *People* table, the primary key consists of one attribute \(*PersonID*\)\.
-+ Other than the primary key, the *People* table is schemaless, which means that neither the attributes nor their data types need to be defined beforehand\. Each item can have its own distinct attributes\.
-+ Most of the attributes are *scalar*, which means that they can have only one value\. Strings and numbers are common examples of scalars\.
-+ Some of the items have a nested attribute \(*Address*\)\. DynamoDB supports nested attributes up to 32 levels deep\.
-
-The following is another example table named *Music* that you could use to keep track of your music collection\.
-
-```
-Music
-
-{
-    "Artist": "No One You Know",
-    "SongTitle": "My Dog Spot",
-    "AlbumTitle": "Hey Now",
-    "Price": 1.98,
-    "Genre": "Country",
-    "CriticRating": 8.4
-}
-
-{
-    "Artist": "No One You Know",
-    "SongTitle": "Somewhere Down The Road",
-    "AlbumTitle": "Somewhat Famous",
-    "Genre": "Country",
-    "CriticRating": 8.4,
-    "Year": 1984
-}
-
-{
-    "Artist": "The Acme Band",
-    "SongTitle": "Still in Love",
-    "AlbumTitle": "The Buck Starts Here",
-    "Price": 2.47,
-    "Genre": "Rock",
-    "PromotionInfo": {
-        "RadioStationsPlaying": {
-            "KHCR",
-            "KQBX",
-            "WTNR",
-            "WJJH"
-        },
-        "TourDates": {
-            "Seattle": "20150622",
-            "Cleveland": "20150630"
-        },
-        "Rotation": "Heavy"
-    }
-}
-
-{
-    "Artist": "The Acme Band",
-    "SongTitle": "Look Out, World",
-    "AlbumTitle": "The Buck Starts Here",
-    "Price": 0.99,
-    "Genre": "Rock"
-}
-```
-
-Note the following about the *Music* table:
-+ The primary key for *Music* consists of two attributes \(*Artist* and *SongTitle*\)\. Each item in the table must have these two attributes\. The combination of *Artist* and *SongTitle* distinguishes each item in the table from all of the others\.
-+ Other than the primary key, the *Music* table is schemaless, which means that neither the attributes nor their data types need to be defined beforehand\. Each item can have its own distinct attributes\.
-+ One of the items has a nested attribute \(*PromotionInfo*\), which contains other nested attributes\. DynamoDB supports nested attributes up to 32 levels deep\.
-
- For more information, see [Working with tables and data in DynamoDB](WorkingWithTables.md)\. 
 
 ## Primary key<a name="HowItWorks.CoreComponents.PrimaryKey"></a>
 
+* TODO:
 When you create a table, in addition to the table name, you must specify the primary key of the table\. The primary key uniquely identifies each item in the table, so that no two items can have the same key\.
 
 DynamoDB supports two different kinds of primary keys:
