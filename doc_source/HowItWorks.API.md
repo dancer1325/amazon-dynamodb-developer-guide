@@ -1,8 +1,6 @@
 # DynamoDB API<a name="HowItWorks.API"></a>
 
-To work with Amazon DynamoDB, your application must use a few simple API operations\. The following is a summary of these operations, organized by category\.
-
-**Topics**
+**API operation categories**
 + [Control plane](#HowItWorks.API.ControlPlane)
 + [Data plane](#HowItWorks.API.DataPlane)
 + [DynamoDB Streams](#HowItWorks.API.Streams)
@@ -10,15 +8,39 @@ To work with Amazon DynamoDB, your application must use a few simple API operati
 
 ## Control plane<a name="HowItWorks.API.ControlPlane"></a>
 
-*Control plane* operations let you create and manage DynamoDB tables\. They also let you work with indexes, streams, and other objects that are dependent on tables\.
-+  `CreateTable` – Creates a new table\. Optionally, you can create one or more secondary indexes, and enable DynamoDB Streams for the table\.
-+ `DescribeTable`– Returns information about a table, such as its primary key schema, throughput settings, and index information\.
-+ `ListTables` – Returns the names of all of your tables in a list\.
-+ `UpdateTable` – Modifies the settings of a table or its indexes, creates or removes new indexes on a table, or modifies DynamoDB Streams settings for a table\.
-+ `DeleteTable` – Removes a table and all of its dependent objects from DynamoDB\.
+* allows
+  * create DynamoDB tables
+  * manage DynamoDB tables
+  * work with
+    * indexes,
+    * streams,
+    * other objects / -- dependent on -- tables
+* `CreateTable`
+  * Creates
+    * new table
+    * optionally
+      * \>=1 secondary indexes
+  * optionally enable DynamoDB Streams | table
+* `DescribeTable`
+  * Returns information about a table
+    * its primary key schema,
+    * throughput settings,
+    * index information
+* `ListTables`
+  * Returns the names of ALL of your tables
+* `UpdateTable`
+  * Modifies (create, remove, adjust) the
+    * settings of a table
+    * its indexes 
+    * DynamoDB Streams settings | table
+* `DeleteTable`
+  * Removes a
+    * table 
+    * ALL its dependent objects
 
 ## Data plane<a name="HowItWorks.API.DataPlane"></a>
 
+* TODO:
 *Data plane* operations let you perform create, read, update, and delete \(also called *CRUD*\) actions on data in a table\. Some of the data plane operations also let you read data from a secondary index\.
 
 You can use [PartiQL \- a SQL\-compatible query language for Amazon DynamoDB](ql-reference.md), to perform these CRUD operations or you can use DynamoDB’s classic CRUD APIs that separates each operation into a distinct API call\. 
