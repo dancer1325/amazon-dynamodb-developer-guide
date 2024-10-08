@@ -1,12 +1,25 @@
 # DynamoDB local usage notes<a name="DynamoDBLocal.UsageNotes"></a>
 
-Except for the endpoint, applications that run with the downloadable version of Amazon DynamoDB should also work with the DynamoDB web service\. However, when using DynamoDB locally, you should be aware of the following:
-+ If you use the `-sharedDb` option, DynamoDB creates a single database file named *shared\-local\-instance\.db*\. Every program that connects to DynamoDB accesses this file\. If you delete the file, you lose any data that you have stored in it\.
-+ If you omit `-sharedDb`, the database file is named *myaccesskeyid\_region\.db*, with the AWS access key ID and AWS Region as they appear in your application configuration\. If you delete the file, you lose any data that you have stored in it\.
-+ If you use the `-inMemory` option, DynamoDB doesn't write any database files at all\. Instead, all data is written to memory, and the data is not saved when you terminate DynamoDB\.
-+ If you use the `-optimizeDbBeforeStartup` option, you must also specify the `-dbPath` parameter so that DynamoDB can find its database file\.
-+ The AWS SDKs for DynamoDB require that your application configuration specify an access key value and an AWS Region value\. Unless you're using the `-sharedDb` or the `-inMemory` option, DynamoDB uses these values to name the local database file\. These values don't have to be valid AWS values to run locally\. However, you might find it convenient to use valid values so that you can run your code in the cloud later by changing the endpoint you're using\.
-+ DynamoDB local always returns null for `billingModeSummary.`
+* run applications -- against -- Amazon DynamoDB Local vs Amazon DynamoDB web service
+  * configure an endpoint
+* if you use Amazon DynamoDB Local, check:
+  * if you use `-sharedDb` option -> DynamoDB creates "*shared-local-instance.db*"
+    * database file
+    * ALL program / connects to DynamoDB -> accesses this file
+    * 👁️if you delete the file -> ANY data / you have stored | it is lost 👁️
+  * if you omit `-sharedDb` -> DynamoDB creates "*myaccesskeyid_region.db*"
+    * database file
+    * AWS access key ID and AWS Region == they appear | your application configuration
+    * 👁️if you delete the file -> ANY data / you have stored | it is lost 👁️
+  * if you use `-inMemory` option -> DynamoDB does NOT write any database files ->
+    * ALL data is written to memory
+    * if you terminate DynamoDB -> data is lost
+  * if you use `-optimizeDbBeforeStartup` option -> you must also specify `-dbPath` parameter
+    * `-dbPath = pathToFindDatabaseFile`
+  * AWS SDKs for DynamoDB requires your application configuration specify an AWS access key value & AWS Region 
+    * NOT need to be valid AWS values
+    * if you use valid AWS values -> if you want to run | Amazon DynamoDB web service -> ONLY change the endpoint 
+  * DynamoDB local ALWAYS returns `null` for `billingModeSummary.`
 
 **Topics**
 + [Command line options](#DynamoDBLocal.CommandLineOptions)
@@ -15,18 +28,34 @@ Except for the endpoint, applications that run with the downloadable version of 
 
 ## Command line options<a name="DynamoDBLocal.CommandLineOptions"></a>
 
-You can use the following command line options with the downloadable version of DynamoDB:
-+ `-cors` `value` — Enables support for cross\-origin resource sharing \(CORS\) for JavaScript\. You must provide a comma\-separated "allow" list of specific domains\. The default setting for `-cors` is an asterisk \(\*\), which allows public access\.
-+ `-dbPath` `value` — The directory where DynamoDB writes its database file\. If you don't specify this option, the file is written to the current directory\. You can't specify both `-dbPath` and `-inMemory` at once\.
-+ `-delayTransientStatuses` — Causes DynamoDB to introduce delays for certain operations\. DynamoDB \(downloadable version\) can perform some tasks almost instantaneously, such as create/update/delete operations on tables and indexes\. However, the DynamoDB service requires more time for these tasks\. Setting this parameter helps DynamoDB running on your computer simulate the behavior of the DynamoDB web service more closely\. \(Currently, this parameter introduces delays only for global secondary indexes that are in either *CREATING* or *DELETING* status\.\)
-+ `-help` — Prints a usage summary and options\.
-+ `-inMemory` — DynamoDB runs in memory instead of using a database file\. When you stop DynamoDB, none of the data is saved\. You can't specify both `-dbPath` and `-inMemory` at once\.
-+ `-optimizeDbBeforeStartup` — Optimizes the underlying database tables before starting DynamoDB on your computer\. You also must specify `-dbPath` when you use this parameter\.
-+ `-port` `value` — The port number that DynamoDB uses to communicate with your application\. If you don't specify this option, the default port is `8000`\.
-**Note**  
-DynamoDB uses port 8000 by default\. If port 8000 is unavailable, this command throws an exception\. You can use the `-port` option to specify a different port number\. For a complete list of DynamoDB runtime options, including `-port` , type this command:  
-`java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -help`
-+ `-sharedDb` — If you specify `-sharedDb`, DynamoDB uses a single database file instead of separate files for each credential and Region\.
+* CL options valid | Amazon DynamoDB Local
+  * `-cors` `value`
+    * -- enables support for -- cross\-origin resource sharing \(CORS\) for JavaScript
+    * `value`
+      * `domain1,domain2, ...`
+        * comma\-separated "allow" list of specific domains
+      * `*`
+        * default 
+        * == public access
+  * `-dbPath` `value`
+    * directory / DynamoDB writes its database file
+    * if you do NOT specify it -> file is written | current directory
+    * NOT possible to specify both `-dbPath` & `-inMemory` 
+  * `-delayTransientStatuses`
+    * TODO: — Causes DynamoDB to introduce delays for certain operations\. DynamoDB \(downloadable version\) can perform some tasks almost instantaneously, such as create/update/delete operations on tables and indexes\. However, the DynamoDB service requires more time for these tasks\. Setting this parameter helps DynamoDB running on your computer simulate the behavior of the DynamoDB web service more closely\. \(Currently, this parameter introduces delays only for global secondary indexes that are in either *CREATING* or *DELETING* status\.\)
+  * `-help`
+    * — Prints a usage summary and options\.
+  * `-inMemory`
+    * — DynamoDB runs in memory instead of using a database file\. When you stop DynamoDB, none of the data is saved\. You can't specify both `-dbPath` and `-inMemory` at once\.
+  * `-optimizeDbBeforeStartup`
+    * — Optimizes the underlying database tables before starting DynamoDB on your computer\. You also must specify `-dbPath` when you use this parameter\.
+  * `-port` `value`
+    * — The port number that DynamoDB uses to communicate with your application\. If you don't specify this option, the default port is `8000`\.
+    **Note**  
+    DynamoDB uses port 8000 by default\. If port 8000 is unavailable, this command throws an exception\. You can use the `-port` option to specify a different port number\. For a complete list of DynamoDB runtime options, including `-port` , type this command:  
+    `java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -help`
+  * `-sharedDb`
+    * — If you specify `-sharedDb`, DynamoDB uses a single database file instead of separate files for each credential and Region\.
 
 ## Setting the local endpoint<a name="DynamoDBLocal.Endpoint"></a>
 
