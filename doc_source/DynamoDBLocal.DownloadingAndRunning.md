@@ -1,182 +1,165 @@
 # Deploying DynamoDB locally on your computer<a name="DynamoDBLocal.DownloadingAndRunning"></a>
 
+* ways
+  * [Download locally](#-download-locally-)
+  * [Docker](#-docker-)
+  * [Apache Maven](#-apache-maven-)
 ------
 #### [ Download locally ]
 
-DynamoDB local is provided as an executable `.jar` file\. The application runs on Windows, Linux, macOS, and other platforms that support Java\.
+* == executable `.jar`
+  * runs |
+    * Windows,
+    * Linux,
+    * macOS,
+      * | M1 -> use DynamoDB local v1.20+ 
+    * other platforms / support Java
+* requirements
+  * JRE v8+
+* steps
+  * [download it / find links | AWS documentation website](http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.DownloadingAndRunning.html)
+    * if you use Eclipse -> use [AWS Toolkit for Eclipse](https://aws.amazon.com/eclipse/)
+  * extract the contents
+  * run
+    * `java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb`
+    * | Windows PowerShell -- `java -D"java.library.path=./DynamoDBLocal_lib" -jar DynamoDBLocal.jar`
+  * 808 as default port
+    * if it's unavailable -> previous command throws an exception 
+  * `Ctrl\+C`
+    * stop DynamoDB
+      * meantime, DynamoDB processes incoming requests flow
+* `java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -help`
+  * complete list of DynamoDB runtime options
+* steps -- to access -- DynamoDB programmatically or through AWS Command Line Interface \(AWS CLI\)
+  * configure your credentials
+    * -- via -- `aws configure`
+      * [Using the AWS CLI](Tools.CLI.md)
+    * _Example:_
+    
+       ```
+       AWS Access Key ID: "fakeMyKeyId"
+       AWS Secret Access Key: "fakeSecretAccessKey"
+       ```
+  * use the `--endpoint-url` parameter
+    * _Example:_
 
-Follow these steps to set up and run DynamoDB on your computer\.
-
-**Note**  
- DynamoDB local v1\.20 and greater is required for use on M1 and newer Apple processors\. 
-
-**To set up DynamoDB on your computer**
-
-1. Download DynamoDB for free from one of the following locations\.  
-****    
-[\[See the AWS documentation website for more details\]](http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.DownloadingAndRunning.html)
-
-   DynamoDB is also available as part of the AWS Toolkit for Eclipse\. For more information, see [AWS Toolkit for Eclipse](https://aws.amazon.com/eclipse/)\.
-**Important**  
-To run DynamoDB on your computer, you must have the Java Runtime Environment \(JRE\) version 8\.x or newer\. The application doesn't run on earlier JRE versions\.
-
-1. After you download the archive, extract the contents and copy the extracted directory to a location of your choice\.
-
-1. To start DynamoDB on your computer, open a command prompt window, navigate to the directory where you extracted `DynamoDBLocal.jar`, and enter the following command\.
-
-   ```
-   java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb
-   ```
-**Note**  
- If you're using Windows PowerShell, be sure to enclose the parameter name or the entire name and value like this:   
-`java -D"java.library.path=./DynamoDBLocal_lib" -jar DynamoDBLocal.jar`  
-DynamoDB processes incoming requests until you stop it\. To stop DynamoDB, press Ctrl\+C at the command prompt\.  
-DynamoDB uses port 8000 by default\. If port 8000 is unavailable, this command throws an exception\. For a complete list of DynamoDB runtime options, including `-port`, enter this command\.  
-`java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -help`
-
-1. Before you can access DynamoDB programmatically or through the AWS Command Line Interface \(AWS CLI\), you must configure your credentials to enable authorization for your applications\. Downloadable DynamoDB requires any credentials to work, as shown in the following example\. 
-
-   ```
-   AWS Access Key ID: "fakeMyKeyId"
-   AWS Secret Access Key: "fakeSecretAccessKey"
-   ```
-
-    You can use the `aws configure` command of the AWS CLI to set up credentials\. For more information, see [Using the AWS CLI](Tools.CLI.md)\. 
-
-1. Start writing applications\. To access DynamoDB running locally with the AWS CLI, use the `--endpoint-url` parameter\. For example, use the following command to list DynamoDB tables\.
-
-   ```
-   aws dynamodb list-tables --endpoint-url http://localhost:8000
-   ```
+     ```
+     aws dynamodb list-tables --endpoint-url http://localhost:8000
+     ```
 
 ------
 #### [ Docker ]
 
-The downloadable version of Amazon DynamoDB is available as a Docker image\. For more information, see [dynamodb\-local](https://hub.docker.com/r/amazon/dynamodb-local)\.
+* [dynamodb\-local Docker Hub](https://hub.docker.com/r/amazon/dynamodb-local)
+  * _Example:_ [use DynamoDB local as part of a REST application / built | AWS Serverless Application Model \(AWS SAM\)](https://github.com/aws-samples/aws-sam-java-rest) 
+* if you want to run a multi\-container / one is the DynamoDB local container -> use Docker Compose
+  * `docker-compose.yml`
+    * 
 
- For an example of using DynamoDB local as part of a REST application built on the AWS Serverless Application Model \(AWS SAM\), see [SAM DynamoDB application for managing orders](https://github.com/aws-samples/aws-sam-java-rest)\. This sample application demonstrates how to use DynamoDB local for testing\. 
+     ```
+     version: '3.8'
+     services:
+       dynamodb-local:
+         command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
+         image: "amazon/dynamodb-local:latest"
+         container_name: dynamodb-local
+         ports:
+           - "8000:8000"
+         volumes:
+           - "./docker/dynamodb:/home/dynamodblocal/data"
+         working_dir: /home/dynamodblocal
+     ```
 
-If you want to run a multi\-container application that also uses the DynamoDB local container, use Docker Compose to define and run all the services in your application, including DynamoDB local\.
+    * if you want multi-container / your application | container1 + DynamoDB local | container2
 
-**To install and run DynamoDB local with Docker compose:**
+     ```
+     version: '3.8'
+     services:
+       dynamodb-local:
+         command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
+         image: "amazon/dynamodb-local:latest"
+         container_name: dynamodb-local
+         ports:
+           - "8000:8000"
+         volumes:
+           - "./docker/dynamodb:/home/dynamodblocal/data"
+         working_dir: /home/dynamodblocal
+       app-node:
+         depends_on:
+           - dynamodb-local
+         image: amazon/aws-cli
+         container_name: app-node
+         ports:
+           - "8080:8080"
+         environment:
+            # AWS_ACCESS_KEY_ID & AWS_SECRET_ACCESS_KEY are required, BUT NOT necessarily valid ones | DynamoDB local
+           AWS_ACCESS_KEY_ID: 'DUMMYIDEXAMPLE'
+           AWS_SECRET_ACCESS_KEY: 'DUMMYEXAMPLEKEY'
+         command:
+           dynamodb describe-limits --endpoint-url http://dynamodb-local:8000 --region us-west-2
+     ```
 
-1. Download and install [Docker desktop](https://www.docker.com/products/docker-desktop)\.
+    * if you want multi-container / your own application image | container1 + DynamoDB local | container2
 
-1. Copy the following code to a file and save it as `docker-compose.yml`\.
-
-   ```
-   version: '3.8'
-   services:
-     dynamodb-local:
-       command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
-       image: "amazon/dynamodb-local:latest"
-       container_name: dynamodb-local
-       ports:
-         - "8000:8000"
-       volumes:
-         - "./docker/dynamodb:/home/dynamodblocal/data"
-       working_dir: /home/dynamodblocal
-   ```
-
-   If you want your application and DynamoDB local to be in separate containers, use the following yaml file\.
-
-   ```
-   version: '3.8'
-   services:
-     dynamodb-local:
-       command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
-       image: "amazon/dynamodb-local:latest"
-       container_name: dynamodb-local
-       ports:
-         - "8000:8000"
-       volumes:
-         - "./docker/dynamodb:/home/dynamodblocal/data"
-       working_dir: /home/dynamodblocal
-     app-node:
-       depends_on:
-         - dynamodb-local
-       image: amazon/aws-cli
-       container_name: app-node
-       ports:
-        - "8080:8080"
-       environment:
-         AWS_ACCESS_KEY_ID: 'DUMMYIDEXAMPLE'
-         AWS_SECRET_ACCESS_KEY: 'DUMMYEXAMPLEKEY'
-       command:
-         dynamodb describe-limits --endpoint-url http://dynamodb-local:8000 --region us-west-2
-   ```
-
-   This docker\-compose\.yml script creates an `app-node` container and a `dynamodb-local` container\. The script runs a command in the `app-node` container that uses the AWS CLI to connect to the `dynamodb-local` container and describes the account and table limits\.
-
-   To use with your own application image, replace the `image` value in the example below with that of your application\.
-
-   ```
-   version: '3.8'
-   services:
-     dynamodb-local:
-       command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
-       image: "amazon/dynamodb-local:latest"
-       container_name: dynamodb-local
-       ports:
-         - "8000:8000"
-       volumes:
-         - "./docker/dynamodb:/home/dynamodblocal/data"
-       working_dir: /home/dynamodblocal
-     app-node:
-       image: location-of-your-dynamodb-demo-app:latest
-       container_name: app-node
-       ports:
-         - "8080:8080"
-       depends_on:
-         - "dynamodb-local"
-       links:
-         - "dynamodb-local"
-       environment:
-         AWS_ACCESS_KEY_ID: 'DUMMYIDEXAMPLE'
-         AWS_SECRET_ACCESS_KEY: 'DUMMYEXAMPLEKEY'
-         REGION: 'eu-west-1'
-   ```
-**Note**  
-The YAML scripts require that you specify an AWS access key and an AWS secret key, but they are not required to be valid AWS keys for you to access DynamoDB local\.
-
-1. Run the following command\-line command:
-
-   ```
-   docker-compose up
-   ```
+     ```
+     version: '3.8'
+     services:
+       dynamodb-local:
+         command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
+         image: "amazon/dynamodb-local:latest"
+         container_name: dynamodb-local
+         ports:
+           - "8000:8000"
+         volumes:
+           - "./docker/dynamodb:/home/dynamodblocal/data"
+         working_dir: /home/dynamodblocal
+       app-node:
+         image: location-of-your-dynamodb-demo-app:latest
+         container_name: app-node
+         ports:
+           - "8080:8080"
+         depends_on:
+           - "dynamodb-local"
+         links:
+           - "dynamodb-local"
+         environment:
+            # AWS_ACCESS_KEY_ID & AWS_SECRET_ACCESS_KEY are required, BUT NOT necessarily valid ones | DynamoDB local
+           AWS_ACCESS_KEY_ID: 'DUMMYIDEXAMPLE'
+           AWS_SECRET_ACCESS_KEY: 'DUMMYEXAMPLEKEY'
+           REGION: 'eu-west-1'
+     ```
+  * `docker-compose up`
 
 ------
 #### [ Apache Maven ]
 
-Follow these steps to use Amazon DynamoDB in your application as a dependency\.
+* Amazon DynamoDB Local | your application -- as a -- dependency
+* goal 
+  * 👁️deploy DynamoDB -- as an -- Apache Maven repository 👁️
+    * TODO: as Maven Repository or simple dependency?
+* steps
+  * add | your "pom.xml"
 
-**To deploy DynamoDB as an Apache Maven repository**
-
-1.  Download and install Apache Maven\. For more information, see [Downloading Apache Maven](https://maven.apache.org/download.cgi) and [Installing Apache Maven](https://maven.apache.org/install.html)\.
-
-1.  Add the DynamoDB Maven repository to your application's Project Object Model \(POM\) file\.
-
-   ```
-   <!--Dependency:-->
-   <dependencies>
-       <dependency>
-          <groupId>com.amazonaws</groupId>
-          <artifactId>DynamoDBLocal</artifactId>
-          <version>[1.12,2.0)</version>
-       </dependency>
-   </dependencies>
-   <!--Custom repository:-->
-   <repositories>
-       <repository>
-          <id>dynamodb-local-oregon</id>
-          <name>DynamoDB Local Release Repository</name>
-          <url>https://s3-us-west-2.amazonaws.com/dynamodb-local/release</url>
-       </repository>
-   </repositories>
-   ```
-**Note**  
-You can also use one of the following repository URLs, depending on your AWS Region\.    
-****    
-[\[See the AWS documentation website for more details\]](http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.DownloadingAndRunning.html)
+     ```
+     <!--Dependency:-->
+     <dependencies>
+         <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>DynamoDBLocal</artifactId>
+            <version>[1.12,2.0)</version>
+         </dependency>
+     </dependencies>
+     
+    <!--Custom repository:-->
+    <!-- TODO: Check if it's needed, because it does NOT appear in latest versions --> 
+     <repositories>
+         <repository>
+            <id>dynamodb-local-oregon</id>
+            <name>DynamoDB Local Release Repository</name>
+            <url>https://s3-us-west-2.amazonaws.com/dynamodb-local/release</url>
+         </repository>
+     </repositories>
+     ```
+  * check [AWS documentation website](http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.DownloadingAndRunning.html)
 
 ------
