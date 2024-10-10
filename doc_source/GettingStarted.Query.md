@@ -1,14 +1,18 @@
 # Query a DynamoDB table<a name="GettingStarted.Query"></a>
 
-You can perform a query on a DynamoDB table using the AWS Management Console, the AWS CLI, or an AWS SDK\. For more information on queries, see [Query operations in DynamoDB](Query.md)\.
+* ways to [query](Query.md) | DynamoDB table
+  * AWS Management Console
+  * AWS CLI
+  * AWS SDK
 
 ## Query a DynamoDB table using an AWS SDK<a name="GettingStarted.Query.SDK"></a>
 
-The following code examples show how to query a DynamoDB table using an AWS SDK\.
+* _Example:_ how to query | DynamoDB table -- via -- AWS SDK
 
 ------
 #### [ \.NET ]
 
+* TODO:
 **AWS SDK for \.NET**  
  There's more on GitHub\. Find the complete example and learn how to set up and run in the [AWS Code Examples Repository](https://github.com/awsdocs/aws-doc-sdk-examples/tree/main/dotnetv3/dynamodb#code-examples)\. 
   
