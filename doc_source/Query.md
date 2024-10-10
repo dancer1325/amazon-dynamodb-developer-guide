@@ -1,10 +1,16 @@
 # Query operations in DynamoDB<a name="Query"></a>
 
-The `Query` operation in Amazon DynamoDB finds items based on primary key values\.
-
-You must provide the name of the partition key attribute and a single value for that attribute\. `Query` returns all items with that partition key value\. Optionally, you can provide a sort key attribute and use a comparison operator to refine the search results\.
-
-For more information on how to use `Query`, such as the request syntax, response parameters, and additional examples, see [Query](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Query.html) in the *Amazon DynamoDB API Reference*\.
+* `Query`
+  * := operation | Amazon DynamoDB / 
+    * finds items -- based on -- primary key values
+      * == you need to provide
+        * partition key attribute name
+        * single attribute value
+      * returns ALL items / that partition key value
+      * optionally, to filter, you can
+        * -- provide a -- sort key attribute
+        * use a comparison operator | returned values
+    * [API Query](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Query.html) 
 
 **Topics**
 + [Key condition expressions for query](#Query.KeyConditionExpressions)
@@ -19,69 +25,71 @@ For more information on how to use `Query`, such as the request syntax, response
 
 ## Key condition expressions for query<a name="Query.KeyConditionExpressions"></a>
 
-To specify the search criteria, you use a *key condition expression*—a string that determines the items to be read from the table or index\. 
+* *key condition expression*
+  * == string / -- specify the -- search criteria
+    * -> items / will be read from the table or index
+  * `"conditionForPartitionKey and conditionForTheSortKey"`
+    * syntax
+    * `conditionForPartitionKey`
+      * `partitionKeyName = value`
+        * syntax
+    * `conditionForTheSortKey`
+      * optional
+      * requirements
+        * use one of the following comparison operators OR
+          * `a = b` 
+          * `a < b` 
+          * `a <= b`
+          * `a > b` 
+          * `a >= b`
+          * `a BETWEEN b AND c`
+        * use `begins_with (attributeName, substr)`
+          * if attributeName's value begins with a particular substring -> true
+  * check 
+    * [Expression attribute names in DynamoDB](Expressions.ExpressionAttributeNames.md)
+    * [Expression attribute values](Expressions.ExpressionAttributeValues.md)
+  * _Example1:_
 
-You must specify the partition key name and value as an equality condition\. You cannot use a non\-key attribute in a Key Condition Expression\.
+    ```
+    aws dynamodb query \
+        --table-name Thread \
+        --key-condition-expression "ForumName = :name" \  # `ForumName` is the partition key, and `:name` is a placeholder for partitionkey's value
+        --expression-attribute-values  '{":name":{"S":"Amazon DynamoDB"}}'
+    ```
 
-You can optionally provide a second condition for the sort key \(if present\)\. The sort key condition must use one of the following comparison operators:
-+ `a = b` — true if the attribute *a* is equal to the value *b*
-+ `a < b` — true if *a* is less than *b*
-+ `a <= b` — true if *a* is less than or equal to *b*
-+ `a > b` — true if *a* is greater than *b*
-+ `a >= b` — true if *a* is greater than or equal to *b*
-+ `a BETWEEN b AND c` — true if *a* is greater than or equal to *b*, and less than or equal to *c*\.
+  * _Example2:_   
 
-The following function is also supported:
-+ `begins_with (a, substr)`— true if the value of attribute `a` begins with a particular substring\.
+    ```
+    aws dynamodb query \
+        --table-name Thread \
+        --key-condition-expression "ForumName = :name and Subject = :sub" \     # `:sub` is a placeholder for the sortkey's value
+        --expression-attribute-values  file://values.json  # store the arguments | `values.json` 
+    ```
 
-The following AWS Command Line Interface \(AWS CLI\) examples demonstrate the use of key condition expressions\. These expressions use placeholders \(such as `:name` and `:sub`\) instead of actual values\. For more information, see [Expression attribute names in DynamoDB](Expressions.ExpressionAttributeNames.md) and [Expression attribute values](Expressions.ExpressionAttributeValues.md)\.
+    ``` # arguments stored | values.json
+    {
+        ":name":{"S":"Amazon DynamoDB"},
+        ":sub":{"S":"DynamoDB Thread 1"}
+    }
+    ```
 
-**Example**  
-Query the `Thread` table for a particular `ForumName` \(partition key\)\. All of the items with that `ForumName` value are read by the query because the sort key \(`Subject`\) is not included in `KeyConditionExpression`\.  
+  * _Example3:_
 
-```
-aws dynamodb query \
-    --table-name Thread \
-    --key-condition-expression "ForumName = :name" \
-    --expression-attribute-values  '{":name":{"S":"Amazon DynamoDB"}}'
-```
+    ```
+    aws dynamodb query \
+        --table-name Reply \
+        --key-condition-expression "Id = :id and begins_with(ReplyDateTime, :dt)" \
+        --expression-attribute-values  file://values.json
+    ``` 
 
-**Example**  
-Query the `Thread` table for a particular `ForumName` \(partition key\), but this time return only the items with a given `Subject` \(sort key\)\.  
+    ``` # arguments stored | values.json
+    {
+        ":id":{"S":"Amazon DynamoDB#DynamoDB Thread 1"},
+        ":dt":{"S":"2015-09"}
+    }
+    ```
 
-```
-aws dynamodb query \
-    --table-name Thread \
-    --key-condition-expression "ForumName = :name and Subject = :sub" \
-    --expression-attribute-values  file://values.json
-```
-The arguments for `--expression-attribute-values` are stored in the `values.json` file\.  
-
-```
-{
-    ":name":{"S":"Amazon DynamoDB"},
-    ":sub":{"S":"DynamoDB Thread 1"}
-}
-```
-
-**Example**  
-Query the `Reply` table for a particular `Id` \(partition key\), but return only those items whose `ReplyDateTime` \(sort key\) begins with certain characters\.  
-
-```
-aws dynamodb query \
-    --table-name Reply \
-    --key-condition-expression "Id = :id and begins_with(ReplyDateTime, :dt)" \
-    --expression-attribute-values  file://values.json
-```
-The arguments for `--expression-attribute-values` are stored in the `values.json` file\.  
-
-```
-{
-    ":id":{"S":"Amazon DynamoDB#DynamoDB Thread 1"},
-    ":dt":{"S":"2015-09"}
-}
-```
-
+* TODO:
 You can use any attribute name in a key condition expression, provided that the first character is `a-z` or `A-Z` and the rest of the characters \(starting from the second character, if present\) are `a-z`, `A-Z`, or `0-9`\. In addition, the attribute name must not be a DynamoDB reserved word\. \(For a complete list of these, see [Reserved words in DynamoDB](ReservedWords.md)\.\) If an attribute name does not meet these requirements, you must define an expression attribute name as a placeholder\. For more information, see [Expression attribute names in DynamoDB](Expressions.ExpressionAttributeNames.md)\.
 
 For items with a given partition key value, DynamoDB stores these items close together, in sorted order by sort key value\. In a `Query` operation, DynamoDB retrieves the items in sorted order, and then processes the items using `KeyConditionExpression` and any `FilterExpression` that might be present\. Only then are the `Query` results sent back to the client\.
