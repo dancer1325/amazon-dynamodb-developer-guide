@@ -135,8 +135,7 @@
 
 * Amazon DynamoDB Local | your application -- as a -- dependency
 * goal 
-  * 👁️deploy DynamoDB -- as an -- Apache Maven repository 👁️
-    * TODO: as Maven Repository or simple dependency?
+  * 👁️deploy DynamoDB -- via -- Apache Maven dependency 👁️
 * steps
   * add | your "pom.xml"
 
@@ -149,16 +148,6 @@
             <version>[1.12,2.0)</version>
          </dependency>
      </dependencies>
-     
-    <!--Custom repository:-->
-    <!-- TODO: Check if it's needed, because it does NOT appear in latest versions --> 
-     <repositories>
-         <repository>
-            <id>dynamodb-local-oregon</id>
-            <name>DynamoDB Local Release Repository</name>
-            <url>https://s3-us-west-2.amazonaws.com/dynamodb-local/release</url>
-         </repository>
-     </repositories>
      ```
   * check [AWS documentation website](http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.DownloadingAndRunning.html)
 
