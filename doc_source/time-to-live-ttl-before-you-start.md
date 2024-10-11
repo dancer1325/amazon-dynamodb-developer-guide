@@ -1,6 +1,11 @@
 # Using DynamoDB Time to Live \(TTL\)<a name="time-to-live-ttl-before-you-start"></a>
 
- When using TTL, most of the hard work is done behind the scenes by DynamoDB on your behalf\. You should, though, be aware of a few considerations to help your implementation proceed smoothly\.
+ 
+* goal
+  * comprehend TTL
+    * 👁️optional to use it👁
+    * MOST of the hard work is done behind the scenes by DynamoDB on your behalf️
+    * -> your implementation proceed smoothly
 
 **Topics**
 + [Formatting an item’s TTL attribute](#time-to-live-ttl-before-you-start-formatting)
@@ -9,14 +14,26 @@
 
 ## Formatting an item’s TTL attribute<a name="time-to-live-ttl-before-you-start-formatting"></a>
 
-When enabling TTL on a table, DynamoDB requires you to identify a specific attribute name that the service will look for when determining if an item is eligible for expiration\. In addition, further requirements ensure that the background TTL processes uses the value of the TTL attribute\. If an item is to be eligible for expiration via TTL:
-+ The item must contain the attribute specified when TTL was enabled on the table\. For example, if you specify for a table to use the attribute name `expdate` as the TTL attribute, but an item does not have an attribute with that name, the TTL process ignores the item\.
-+ The TTL attribute’s value must be a top\-level `Number` data type\. For example, if you specify for a table to use the attribute name `expdate` as the TTL attribute, but the attribute on an item is a `String` data type, the TTL processes ignore the item\.
-+ The TTL attribute’s value must be a timestamp in [Unix epoch time format](https://en.wikipedia.org/wiki/Unix_time) in *seconds*\. If you use any other format, the TTL processes ignore the item\. For example, if you set the value of the attribute to 1645119622, that is Thursday, February 17, 2022 17:40:22 \(GMT\), the item will be expired after that time\. For help formatting your epoch timestamps, you can use third\-party tools such as [Epoch Converter](https://epochconverter.com/) to get a visual web form\.
-+ The TTL attribute value must be a datetimestamp with an expiration of no more than five years in the past\. For example, if you set the value of the attribute to 1171734022, that is February 17, 2007 17:40:22 \(GMT\) and older than five years\. As a result, the TTL processes will not expire that item\.
+* optional / table
+  * == you need to enable
+* requirements
+  * identify a specific attribute name
+    * if an item does NOT have that attribute -> TTL processes ignores it
+  * TTL attribute’s value -- must be a -- 
+    * top-level `Number` data type
+      * otherwise, TTL processes ignore the item -- _Example:_ `String` --
+    * timestamp / [Unix epoch time format](https://en.wikipedia.org/wiki/Unix_time) in *seconds*
+      * otherwise, TTL processes ignore the item
+      * [Epoch Converter](https://epochconverter.com/)
+    * dateTimeStamp / expiration < 5 years in the past
+      * otherwise, TTL processes NOT expire that item
+* uses
+  * determine if an item is eligible for expiration
+
 
 ## Usage notes<a name="time-to-live-ttl-before-you-start-notes"></a>
 
+* TODO:
 When using TTL, consider the following:
 + Enabling, disabling, or changing TTL settings on a table can take approximately one hour for the settings to propagate and to allow the execution of any further TTL related actions\.
 + You cannot reconfigure TTL to look for a different attribute\. You must disable TTL, and then reenable TTL with the new attribute going forward\.
@@ -29,7 +46,10 @@ When using TTL, consider the following:
 
 ## Troubleshooting TTL<a name="time-to-live-ttl-before-you-start-troubleshooting"></a>
 
-If DynamoDB TTL is not working, check the following:
-+ Confirm that you have enabled TTL on the table, and the name of the attribute selected for TTL is set to what your code is writing into items\. You can confirm this information on a table’s *Overview* tab on the DynamoDB console\.
-+ Look at Amazon CloudWatch metrics on the *Metrics* tab of the DynamoDB console to confirm that TTL is deleting items as you expect them to be deleted\.
-+ Confirm that the TTL attribute value is properly formatted\. For more information see, [Formatting an item’s TTL attribute](#time-to-live-ttl-before-you-start-formatting)\.
+* things to check 
+  * DynamoDB console's *Overview* tab
+    * TTL | table is enabled
+    * name of the attribute for TTL == your code is writing into items
+  * DynamoDB console's Amazon CloudWatch metrics | *Metrics* tab
+    * TTL is deleting items -- as -- you expect them to be deleted
+  * TTL attribute value is [properly formatted](#time-to-live-ttl-before-you-start-formatting)
