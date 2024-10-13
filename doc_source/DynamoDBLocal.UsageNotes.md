@@ -59,31 +59,36 @@
 
 ## Setting the local endpoint<a name="DynamoDBLocal.Endpoint"></a>
 
-By default, the AWS SDKs and tools use endpoints for the Amazon DynamoDB web service\. To use the SDKs and tools with the downloadable version of DynamoDB, you must specify the local endpoint:
+* AWS SDKs & tools
+  * for the Amazon DynamoDB web service
+    * by default,  -- use -- endpoints
+  * for the downloadable version of DynamoDB
+    * 👁️-> you MUST specify the local endpoint 👁️
 
-`http://localhost:8000`
+        `http://localhost:8000`
 
 ### AWS Command Line Interface<a name="DynamoDBLocal.Endpoint.CLI"></a>
 
-You can use the AWS Command Line Interface \(AWS CLI\) to interact with downloadable DynamoDB\. For example, you can use it to perform all the steps in [Creating tables and loading data for code examples in DynamoDB](SampleData.md)\.
+* uses
+  * [Creating tables and loading data for code examples in DynamoDB](SampleData.md)
+* `--endpoint-url` parameter
+  * allows
+    * accessing DynamoDB / running locally
 
-To access DynamoDB running locally, use the `--endpoint-url` parameter\. The following is an example of using the AWS CLI to list the tables in DynamoDB on your computer\.
-
-```
-aws dynamodb list-tables --endpoint-url http://localhost:8000
-```
-
-**Note**  
-The AWS CLI can't use the downloadable version of DynamoDB as a default endpoint\. Therefore, you must specify `--endpoint-url` with each AWS CLI command\.
+    ```
+    aws dynamodb list-tables --endpoint-url http://localhost:8000
+    ```
 
 ### AWS SDKs<a name="DynamoDBLocal.Endpoint.SDK"></a>
 
-The way you specify an endpoint depends on the programming language and AWS SDK you're using\. The following sections describe how to do this:
-+ [Java: Setting the AWS Region and endpoint](CodeSamples.Java.md#CodeSamples.Java.RegionAndEndpoint) \(DynamoDB local supports the AWS SDK for Java V1 and V2\)
-+ [\.NET: Setting the AWS Region and endpoint](CodeSamples.DotNet.md#CodeSamples.DotNet.RegionAndEndpoint)
-
-**Note**  
-For examples in other programming languages, see [Getting started with DynamoDB and the AWS SDKs](GettingStarted.md)\.
+* way to specify an endpoint
+  * -- depends on the --
+    * programming language
+    * AWS SDK / you're using
+  * check
+    * [Java: Setting the AWS Region and endpoint](CodeSamples.Java.md#CodeSamples.Java.RegionAndEndpoint)
+      * DynamoDB local supports the AWS SDK for Java V1 and V2
+    + [\.NET: Setting the AWS Region and endpoint](CodeSamples.DotNet.md#CodeSamples.DotNet.RegionAndEndpoint)
 
 ## Differences between downloadable DynamoDB and the DynamoDB web service<a name="DynamoDBLocal.Differences"></a>
 
