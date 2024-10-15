@@ -1,6 +1,9 @@
 # Troubleshooting Amazon DynamoDB identity and access<a name="security_iam_troubleshoot"></a>
 
-Use the following information to help you diagnose and fix common issues that you might encounter when working with DynamoDB and IAM\.
+* goal
+  * if you work with DynamoDB and IAM, and get issues, help you
+    * diagnose
+    * fix
 
 **Topics**
 + [I am not authorized to perform an action in DynamoDB](#security_iam_troubleshoot-no-permissions)
@@ -9,18 +12,16 @@ Use the following information to help you diagnose and fix common issues that yo
 
 ## I am not authorized to perform an action in DynamoDB<a name="security_iam_troubleshoot-no-permissions"></a>
 
-If the AWS Management Console tells you that you're not authorized to perform an action, then you must contact your administrator for assistance\. Your administrator is the person that provided you with your user name and password\.
+* contact your administrator
+* _Example:_ `mateojackson` user tries to use the console to view details about a fictional `my-example-widget` resource / NOT have the fictional `aws:GetWidget` permissions
 
-The following example error occurs when the `mateojackson` user tries to use the console to view details about a fictional `my-example-widget` resource but does not have the fictional `aws:GetWidget` permissions\.
-
-```
-User: arn:aws:iam::123456789012:user/mateojackson is not authorized to perform: aws:GetWidget on resource: my-example-widget
-```
-
-In this case, Mateo asks his administrator to update his policies to allow him to access the `my-example-widget` resource using the `aws:GetWidget` action\.
+    ```
+    User: arn:aws:iam::123456789012:user/mateojackson is not authorized to perform: aws:GetWidget on resource: my-example-widget
+    ```
 
 ## I am not authorized to perform iam:PassRole<a name="security_iam_troubleshoot-passrole"></a>
 
+* TODO:
 If you receive an error that you're not authorized to perform the `iam:PassRole` action, your policies must be updated to allow you to pass a role to DynamoDB\.
 
 Some AWS services allow you to pass an existing role to that service instead of creating a new service role or service\-linked role\. To do this, you must have permissions to pass the role to the service\.
